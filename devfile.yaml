@@ -1,0 +1,75 @@
+schemaVersion: 2.2.0
+metadata:
+  name: java-quarkus
+  displayName: Quarkus Java
+  description: Java application using Quarkus and a mysql db
+  tags:
+    - Java
+    - Quarkus
+  projectType: Quarkus
+  language: Java
+  version: 1.5.0
+starterProjects:
+  - name: quarkus-fruitdb
+    git:
+      remotes:
+        origin: https://github.com/bmeklund/devspaces-quarkus-fruitdb
+components:
+  - name: dev
+    container:
+      image: registry.redhat.io/devspaces/udi-rhel8@sha256:aa39ede33bcbda6aa2723d271c79ab8d8fd388c7dfcbc3d4ece745b7e9c84193
+      args: ['tail', '-f', '/dev/null']
+      memoryLimit: 512Mi ## default app nowhere needs this but leaving room for expansion.
+      mountSources: true
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+  - name: tools
+    container:
+      image: registry.access.redhat.com/ubi8/openjdk-21:1.20-3.1721207868
+      args: ['tail', '-f', '/dev/null']
+      memoryLimit: 1024Mi ## default app nowhere needs this but leaving room for expansion.
+      mountSources: true
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: https-quarkus
+          targetPort: 8080
+          protocol: https
+        - exposure: none
+          name: debug
+          targetPort: 5858
+      env:
+        - name: DEBUG_PORT
+          value: '5858'
+  - name: m2
+    volume:
+      size: 3Gi
+commands:
+  - id: init-compile
+    exec:
+      component: tools
+      commandLine: './mvnw -Dmaven.repo.local=/home/user/.m2/repository compile'
+      workingDir: ${PROJECT_SOURCE}
+  - id: dev-run
+    exec:
+      component: tools
+      commandLine: './mvnw -Dmaven.repo.local=/home/user/.m2/repository quarkus:dev -Dquarkus.http.host=0.0.0.0'
+      hotReloadCapable: true
+      group:
+        kind: run
+        isDefault: true
+      workingDir: ${PROJECT_SOURCE}
+  - id: dev-debug
+    exec:
+      component: tools
+      commandLine: './mvnw -Dmaven.repo.local=/home/user/.m2/repository quarkus:dev -Dquarkus.http.host=0.0.0.0 -Ddebug=${DEBUG_PORT}'
+      hotReloadCapable: true
+      group:
+        kind: debug
+        isDefault: true
+      workingDir: ${PROJECT_SOURCE}
+events:
+  postStart:
+    - init-compile
