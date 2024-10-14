@@ -26,7 +26,7 @@ components:
           path: /home/user/.m2
   - name: tools
     container:
-      image: registry.access.redhat.com/ubi8/openjdk-21:1.20-3.1721207868
+      image: registry.access.redhat.com/ubi8/openjdk-21
       args: ['tail', '-f', '/dev/null']
       memoryLimit: 1024Mi ## default app nowhere needs this but leaving room for expansion.
       mountSources: true
@@ -43,6 +43,33 @@ components:
       env:
         - name: DEBUG_PORT
           value: '5858'
+  - name: mariadb
+    container:
+      image: quay.io/eclipse/che--mariadb:10.7.1-5a8009369ee57c85b6f4a08406147bd9c505cde6b8250d16a27d2a5febfdead7
+      memoryLimit: 300Mi
+      endpoints:
+        - exposure: none
+          name: db
+          protocol: tcp
+          targetPort: 3306
+      env:
+        - name: MARIADB_USER
+          value: myuser
+        - name: MARIADB_PASSWORD
+          value: mypassword
+        - name: MARIADB_DATABASE
+          value: fruitdb
+        - name: MARIADB_ALLOW_EMPTY_ROOT_PASSWORD
+          value: allow
+        - name: PS1
+          value: $(echo ${0}) $
+      volumeMounts:
+        - name: mysqldata
+          path: /var/lib/mysql
+
+  - name: mysqldata
+    volume:
+      size: 256Mi
   - name: m2
     volume:
       size: 3Gi
