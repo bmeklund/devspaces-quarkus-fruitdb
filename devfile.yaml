@@ -55,16 +55,16 @@ components:
   - name: m2
     volume:
       size: 3Gi
-      
+
 commands:
   - id: init-compile
     exec:
-      component: tools
+      component: dev
       commandLine: './mvnw -Dmaven.repo.local=/home/user/.m2/repository compile'
       workingDir: ${PROJECT_SOURCE}
   - id: dev-run
     exec:
-      component: tools
+      component: dev
       commandLine: './mvnw -Dmaven.repo.local=/home/user/.m2/repository quarkus:dev -Dquarkus.http.host=0.0.0.0'
       hotReloadCapable: true
       group:
@@ -73,7 +73,7 @@ commands:
       workingDir: ${PROJECT_SOURCE}
   - id: dev-debug
     exec:
-      component: tools
+      component: dev
       commandLine: './mvnw -Dmaven.repo.local=/home/user/.m2/repository quarkus:dev -Dquarkus.http.host=0.0.0.0 -Ddebug=${DEBUG_PORT}'
       hotReloadCapable: true
       group:
