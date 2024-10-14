@@ -89,6 +89,3 @@ commands:
       group:
         kind: run
         isDefault: true
-events:
-  postStart:
-    - init-compile
