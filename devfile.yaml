@@ -24,29 +24,11 @@ components:
       volumeMounts:
         - name: m2
           path: /home/user/.m2
-  - name: tools
-    container:
-      image: registry.access.redhat.com/ubi8/openjdk-21
-      args: ['tail', '-f', '/dev/null']
-      memoryLimit: 1024Mi ## default app nowhere needs this but leaving room for expansion.
-      mountSources: true
-      volumeMounts:
-        - name: m2
-          path: /home/user/.m2
-      endpoints:
-        - name: https-quarkus
-          targetPort: 8080
-          protocol: https
-        - exposure: none
-          name: debug
-          targetPort: 5858
-      env:
-        - name: DEBUG_PORT
-          value: '5858'
+
   - name: mysql
     container:
       image: quay.io/sclorg/mysql-80-c9s
-      memoryLimit: 300Mi
+      memoryLimit: 1024Mi
       endpoints:
         - exposure: none
           name: db
@@ -66,10 +48,30 @@ components:
       volumeMounts:
         - name: mysqldata
           path: /var/lib/mysql
-
+  
   - name: mysqldata
     volume:
       size: 256Mi
+  
+  - name: tools
+    container:
+      image: registry.access.redhat.com/ubi8/openjdk-21
+      args: ['tail', '-f', '/dev/null']
+      memoryLimit: 1024Mi ## default app nowhere needs this but leaving room for expansion.
+      mountSources: true
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: https-quarkus
+          targetPort: 8080
+          protocol: https
+        - exposure: none
+          name: debug
+          targetPort: 5858
+      env:
+        - name: DEBUG_PORT
+          value: '5858'
   - name: m2
     volume:
       size: 3Gi
