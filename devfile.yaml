@@ -27,9 +27,9 @@ components:
   
   - name: tools
     container:
-      image: registry.access.redhat.com/ubi8/openjdk-17@sha256:1e7c98337b27ca336c9f0c3734460c8fa621b35e99d5a45cf815bc8db9f1db98
+      image: registry.access.redhat.com/ubi8/openjdk-17:1.20-2.1721231681
       args: ['tail', '-f', '/dev/null']
-      memoryLimit: 512Mi ## default app nowhere needs this but leaving room for expansion.
+      memoryLimit: 1024Mi ## default app nowhere needs this but leaving room for expansion.
       mountSources: true
       volumeMounts:
         - name: m2
