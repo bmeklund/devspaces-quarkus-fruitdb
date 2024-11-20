@@ -17,7 +17,7 @@ starterProjects:
 components:
   - name: dev
     container:
-      image: registry.redhat.io/devspaces/udi-rhel8:3.16
+      image: quay.io/devfile/universal-developer-image:ubi8-277c10c
       args: ['tail', '-f', '/dev/null']
       memoryLimit: 512Mi ## default app nowhere needs this but leaving room for expansion.
       mountSources: true
