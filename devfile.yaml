@@ -15,33 +15,6 @@ starterProjects:
       remotes:
         origin: https://github.com/bmeklund/devspaces-quarkus-fruitdb
 components:
-   - name: dev
-    container:
-      image: registry.redhat.io/devspaces/udi-rhel8:3.16
-      args: ['tail', '-f', '/dev/null']
-      memoryLimit: 512Mi ## default app nowhere needs this but leaving room for expansion.
-      mountSources: true
-      volumeMounts:
-        - name: m2
-          path: /home/user/.m2
-  - name: tools
-    container:
-      image: registry.access.redhat.com/ubi8/openjdk-17:1.20-2.1721231681
-      args: ['tail', '-f', '/dev/null']
-      memoryLimit: 1024Mi ## default app nowhere needs this but leaving room for expansion.
-      mountSources: true
-      volumeMounts:
-        - name: m2
-          path: /home/user/.m2
-      endpoints:
-        - name: http-quarkus
-          targetPort: 8080
-        - exposure: none
-          name: debug
-          targetPort: 5858
-      env:
-        - name: DEBUG_PORT
-          value: '5858'
   - name: mysql
     container:
       image: quay.io/sclorg/mysql-80-c9s
@@ -68,10 +41,18 @@ components:
    - name: mysqldata
     volume:
       size: 256Mi
+   - name: dev
+    container:
+      image: registry.redhat.io/devspaces/udi-rhel8:3.16
+      args: ['tail', '-f', '/dev/null']
+      memoryLimit: 512Mi ## default app nowhere needs this but leaving room for expansion.
+      mountSources: true
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
   - name: m2
     volume:
       size: 3Gi
-
 commands:
   - id: init-compile
     exec:
