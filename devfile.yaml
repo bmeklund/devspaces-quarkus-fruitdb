@@ -38,10 +38,10 @@ components:
       volumeMounts:
         - name: mysqldata
           path: /var/lib/mysql
-   - name: mysqldata
+  - name: mysqldata
     volume:
       size: 256Mi
-   - name: dev
+  - name: dev
     container:
       image: registry.redhat.io/devspaces/udi-rhel8:3.16
       args: ['tail', '-f', '/dev/null']
